@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Game Multiplayer</title>
     <link href="styles/styles.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
 </head>
 <body>
     <canvas id="screen" width="10" height="10"></canvas>
@@ -14,18 +15,35 @@
         import createKeyboardListener from './js/keyBoardListener.js' 
         import createGame from './js/game.js'
         import render from './js/render.js'
-
-        const screen = document.getElementById('screen')
         
         const keyboardListener = createKeyboardListener()
         const game = createGame()
-        keyboardListener.subscribe(game.movePlayer)
 
-        game.addFruit({fruitId: 'fruit2', fruitX: 3, fruitY: 4})
-        game.addFruit({fruitId: 'fruit3', fruitX: 1, fruitY: 4})
-        game.addPlayer({playerId: 'player1', playerX: 2, playerY: 0})
+        const socket = io()
 
-        render(screen, game, requestAnimationFrame)
+        socket.on('connect', () => {
+            const playerId = socket.id
+            console.log(`Player connected on Client with id: ${playerId}`)
+
+            const screen = document.getElementById('screen')
+            render(screen, game, requestAnimationFrame, playerId)
+        })
+
+        socket.on('setup', (state) => {
+            game.setState(state)
+            keyboardListener.registerPlayer(socket.id)
+            keyboardListener.subscribe(game.movePlayer)
+        })
+
+        socket.on('add-player', (command) => {
+            console.log(`Receiving ${command.type} => ${command.playerId}`)
+            game.addPlayer(command)
+        })
+
+        socket.on('remove-player', (command) => {
+            console.log(`Receiving ${command.type} => ${command.playerId}`)
+            game.removePlayer(command)
+        })
     </script>
 </body>
 </html>

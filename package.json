@@ -1,18 +1,19 @@
 {
   "name": "game",
   "version": "1.0.0",
-  "main": "server.js",
+  "main": "src/server.js",
   "repository": "git@github.com:vpellega/primeiro-jogo-multiplayer.git",
   "author": "vpellega <victor.pellegrino@outlook.com>",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon --exec babel-node server.js"
+    "start": "nodemon --exec babel-node src/server.js"
   },
   "dependencies": {
     "express": "^4.17.1",
     "http": "^0.0.0",
     "http2": "^3.3.7",
-    "nodemon": "^2.0.2"
+    "nodemon": "^2.0.2",
+    "socket.io": "^2.3.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
